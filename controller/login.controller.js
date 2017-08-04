@@ -36,14 +36,19 @@ module.exports={
         var resultMode = new ResultModel();
         var tel = req.body.tel;
         var code = req.body.code;
-        if(!tel||!code){
+        var pass = req.body.password;
+        var deviceId = req.body.deviceId;
+
+        if(!tel||!code||!pass||!deviceId){
             resultMode.code = 5;
             resultMode.message = CodeMessage.MSG_5
             return res.json(resultMode);
         }
-        User.find({tel:tel,smscode:code}).exec(function (err,doc) {
-            if(err) return next(err);
-            if(doc.length==1){
+        User.findOneAndUpdate({tel:tel,smscode:code},{$set:{
+            password:pass,deviceId:deviceId
+        }},function (err,doc) {
+            if (err) return next(err);
+            if(doc._id){
                 resultMode.code = 1;
                 resultMode.message = CodeMessage.MSG_1;
                 return res.json(resultMode);
@@ -53,10 +58,21 @@ module.exports={
                 return res.json(resultMode);
             }
         })
+        // User.find({tel:tel,smscode:code}).exec(function (err,doc) {
+        //     if(err) return next(err);
+        //     if(doc.length==1){
+        //         resultMode.code = 1;
+        //         resultMode.message = CodeMessage.MSG_1;
+        //         return res.json(resultMode);
+        //     }else {
+        //         resultMode.code=4;
+        //         resultMode.message = CodeMessage.MSG_1;
+        //         return res.json(resultMode);
+        //     }
+        // })
     },
     getSMSCode:function (req,res,next) {
         var phoneNum = req.query.tel;
-        var deviceId = req.query.deviceId;
         var resultMode = new ResultModel();
         if(!phoneNum||!deviceId){
             resultMode.code=5;
@@ -86,7 +102,6 @@ module.exports={
                             {
                                 tel:phoneNum,
                                 smscode:code,
-                                deviceId:deviceId
                             }
                         );
                         user.save(function (err,doc) {

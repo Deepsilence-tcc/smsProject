@@ -33,7 +33,14 @@ var AccountSchema = new mongoose.Schema({
         default:Date.now()
     },
     smscode:Number,
-    deviceId:String,
+    deviceId:{
+        type:String,
+        default:'',
+    },
+    password:{
+      type:String,
+        default:''
+    },
     times:{
         type:Number,
         default:3,
