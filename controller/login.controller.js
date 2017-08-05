@@ -58,18 +58,6 @@ module.exports={
                 return res.json(resultMode);
             }
         })
-        // User.find({tel:tel,smscode:code}).exec(function (err,doc) {
-        //     if(err) return next(err);
-        //     if(doc.length==1){
-        //         resultMode.code = 1;
-        //         resultMode.message = CodeMessage.MSG_1;
-        //         return res.json(resultMode);
-        //     }else {
-        //         resultMode.code=4;
-        //         resultMode.message = CodeMessage.MSG_1;
-        //         return res.json(resultMode);
-        //     }
-        // })
     },
     getSMSCode:function (req,res,next) {
         var phoneNum = req.query.tel;
