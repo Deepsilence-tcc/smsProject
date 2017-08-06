@@ -45,6 +45,10 @@ var AccountSchema = new mongoose.Schema({
         type:Number,
         default:3,
     },
+    type:{
+        default:0,
+        type:Number,
+    },
     createAt: {
         type: Date,
         default: Date.now

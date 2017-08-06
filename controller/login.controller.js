@@ -7,28 +7,31 @@ const SMSClient = require('../lib/index');
 var mongoose = require('mongoose');
 var config = require('../config/env/development');
 var User = mongoose.model('Account');
-
-
 module.exports={
     login:function (req,res,next) {
-        var telNum = req.query.tel;
+        var telNum = req.body.tel;
+        var password = req.body.password;
         var resultMode = new ResultModel();
-        if(!telNum){
+        if(!telNum||!password){
             resultMode.code = 5;
             resultMode.message=CodeMessage.MSG_5;
             return res.json(resultMode);
         }else {
-            User.findOne({tel:telNum}).exec(function (err,doc) {
+            User.findOne({tel:telNum,password:password}).exec(function (err,doc) {
                 if(err) return next(err);
-                if(doc._id){
+                console.log(doc);
+                if(doc){
                     resultMode.code=1;
                     resultMode.message=CodeMessage.MSG_1;
                     resultMode.data = doc
+                    return res.json(resultMode);
+
                 }else {
-                    resultMode.code=0;
-                    resultMode.message = CodeMessage.MSG_0;
+                    resultMode.code=4;
+                    resultMode.message = CodeMessage.MSG_4;
+                    return res.json(resultMode);
+
                 }
-                return res.json(resultMode);
             })
         }
     },
@@ -48,21 +51,23 @@ module.exports={
             password:pass,deviceId:deviceId
         }},function (err,doc) {
             if (err) return next(err);
-            if(doc._id){
+            console.log(doc);
+            if(doc){
                 resultMode.code = 1;
                 resultMode.message = CodeMessage.MSG_1;
                 return res.json(resultMode);
             }else {
                 resultMode.code=4;
-                resultMode.message = CodeMessage.MSG_1;
+                resultMode.message = CodeMessage.MSG_4;
                 return res.json(resultMode);
             }
         })
     },
     getSMSCode:function (req,res,next) {
+        console.log(req.query.tel);
         var phoneNum = req.query.tel;
         var resultMode = new ResultModel();
-        if(!phoneNum||!deviceId){
+        if(!phoneNum){
             resultMode.code=5;
             resultMode.message=CodeMessage.MSG_5;
             return res.json(resultMode);
@@ -75,14 +80,19 @@ module.exports={
             SignName: '蜜桃',
             TemplateCode: 'SMS_80330031',
             TemplateParam: JSON.stringify({"code": code})
-        }).then(function (res) {
-            let {Code}=res
+        }).then(function (result) {
+            let {Code}=result
             if (Code === 'OK') {
                 User.findOne({tel:phoneNum}).exec(function (err,doc) {
                     console.log(doc);
                     if(doc){
                         User.update({tel:phoneNum},{$set:{smscode:code}},{multi:false}).exec(function (err) {
                             if(err) return next(err);
+                            else {
+                                resultMode.code=1;
+                                resultMode.message=CodeMessage.MSG_1;
+                                return res.json(resultMode);
+                            }
                         })
 
                     }else {
@@ -104,7 +114,6 @@ module.exports={
                 })
             }
         }, function (err) {
-            console.log(err);
             resultMode.code=0;
             resultMode.message=CodeMessage.MSG_0;
             return res.json(resultMode);
