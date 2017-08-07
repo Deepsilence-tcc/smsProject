@@ -17,7 +17,7 @@ module.exports={
             resultMode.message=CodeMessage.MSG_5;
             return res.json(resultMode);
         }else {
-            User.findOne({tel:telNum,password:password}).exec(function (err,doc) {
+            User.findOne({tel:telNum,password:password},'-password').exec(function (err,doc) {
                 if(err) return next(err);
                 console.log(doc);
                 if(doc){
@@ -47,21 +47,31 @@ module.exports={
             resultMode.message = CodeMessage.MSG_5
             return res.json(resultMode);
         }
-        User.findOneAndUpdate({tel:tel,smscode:code},{$set:{
-            password:pass,deviceId:deviceId
-        }},function (err,doc) {
-            if (err) return next(err);
-            console.log(doc);
-            if(doc){
-                resultMode.code = 1;
-                resultMode.message = CodeMessage.MSG_1;
+        User.findOne({tel:tel}).exec(function (err,doc) {
+            if(err) return next(err);
+            else if(doc.password!=''){
+                resultMode.code = 2;
+                resultMode.message = CodeMessage.MSG_2;
                 return res.json(resultMode);
             }else {
-                resultMode.code=4;
-                resultMode.message = CodeMessage.MSG_4;
-                return res.json(resultMode);
+            //    更新操作
+                User.findOneAndUpdate({tel:tel,smscode:code},{$set:{
+                    password:pass,deviceId:deviceId
+                }},function (err,doc) {
+                    if (err) return next(err);
+                    if(doc){
+                        resultMode.code = 1;
+                        resultMode.message = CodeMessage.MSG_1;
+                        return res.json(resultMode);
+                    }else {
+                        resultMode.code=4;
+                        resultMode.message = CodeMessage.MSG_4;
+                        return res.json(resultMode);
+                    }
+                })
             }
         })
+
     },
     getSMSCode:function (req,res,next) {
         console.log(req.query.tel);
