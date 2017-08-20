@@ -61,3 +61,4 @@ sftp-config.json
 .idea/vcs.xml
 public/images/
 public/javascripts/
+.idea
