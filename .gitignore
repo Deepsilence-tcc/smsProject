@@ -62,3 +62,4 @@ sftp-config.json
 public/images/
 public/javascripts/
 .idea
+config/env/
