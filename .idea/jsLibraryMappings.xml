@@ -2,6 +2,7 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$/lib/index.js" libraries="{ECMAScript 6}" />
+    <file url="file://$PROJECT_DIR$/util/http.js" libraries="{ECMAScript 6, react-native-DefinitelyTyped}" />
     <file url="PROJECT" libraries="{node-DefinitelyTyped}" />
   </component>
 </project>

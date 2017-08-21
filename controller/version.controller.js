@@ -58,9 +58,9 @@ module.exports={
                     return res.json(resultModel);
                 }
             }else {
-                resultMode.code = 0;
-                resultMode.message = CodeMessage.MSG_0;
-                return res.json(resultMode);
+                resultModel.code = 0;
+                resultModel.message = CodeMessage.MSG_0;
+                return res.json(resultModel);
             }
         })
     }

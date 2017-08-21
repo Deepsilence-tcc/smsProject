@@ -9,6 +9,7 @@
     "@alicloud/dybaseapi": "^1.0.0",
     "@alicloud/dysmsapi": "^1.0.0",
     "@alicloud/mns": "^1.0.0-beta4",
+    "bluebird": "^3.5.0",
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
@@ -17,6 +18,7 @@
     "moment": "^2.18.1",
     "mongoose": "^4.0.0",
     "morgan": "~1.7.0",
+    "request": "^2.81.0",
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
