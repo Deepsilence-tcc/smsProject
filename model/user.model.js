@@ -49,6 +49,16 @@ var AccountSchema = new mongoose.Schema({
         default:0,
         type:Number,
     },
+    "vipTime" : {
+        "start" : {
+            type:Date,
+            default:Date.now()
+        },
+        "end" : {
+            type:Date,
+            default:Date.now()
+        }
+    },
     createAt: {
         type: Date,
         default: Date.now

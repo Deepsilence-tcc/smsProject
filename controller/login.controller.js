@@ -17,7 +17,7 @@ module.exports={
             resultModel.message=CodeMessage.MSG_5;
             return res.json(resultModel);
         }else {
-            User.findOne({tel:telNum,password:password},'-password').exec(function (err,doc) {
+            User.findOne({tel:telNum,password:password},{password:0,smscode:0,isDelete:0,createAt:0,modifyAt:0,}).exec(function (err,doc) {
                 if(err) return next(err);
                 console.log(doc);
                 if(doc){
@@ -93,7 +93,7 @@ module.exports={
         }).then(function (result) {
             let {Code}=result
             if (Code === 'OK') {
-                User.findOne({tel:phoneNum}).exec(function (err,doc) {
+                User.findOne({tel:phoneNum,isDelete:0}).exec(function (err,doc) {
                     console.log(doc);
                     if(doc){
                         User.update({tel:phoneNum},{$set:{smscode:code}},{multi:false}).exec(function (err) {
@@ -143,5 +143,11 @@ module.exports={
         User.findOne({
 
         })
+    },
+    payCallBack:function (req,res,next) {
+        var user = req.user;
+        var type = req.type;
+        var startTime = Date.now();
     }
+
 }
