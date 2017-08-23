@@ -6,5 +6,6 @@ module.exports = function() {
     require('../model/user.model');
     require('../model/version.model');
     require('../model/key.model');
+    require('../model/statics.model');
     return db;
 };
