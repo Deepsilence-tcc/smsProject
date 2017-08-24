@@ -2,7 +2,7 @@
  * Created by cong on 2017/7/28.
  */
 var CodeMessage = require('../util/codemessage');
-var resultModel = require('../util/resultModel');
+var ResultModel = require('../util/resultModel');
 const SMSClient = require('../lib/index');
 var mongoose = require('mongoose');
 var config = require('../config/env/development');
@@ -11,7 +11,7 @@ module.exports={
     login:function (req,res,next) {
         var telNum = req.body.tel;
         var password = req.body.password;
-        var resultModel = new resultModel();
+        var resultModel = new ResultModel();
         if(!telNum||!password){
             resultModel.code = 5;
             resultModel.message=CodeMessage.MSG_5;
@@ -36,7 +36,7 @@ module.exports={
         }
     },
     register:function (req,res,next) {
-        var resultModel = new resultModel();
+        var resultModel = new ResultModel();
         var tel = req.body.tel;
         var code = req.body.code;
         var pass = req.body.password;
@@ -76,7 +76,7 @@ module.exports={
     getSMSCode:function (req,res,next) {
         console.log(req.query.tel);
         var phoneNum = req.query.tel;
-        var resultModel = new resultModel();
+        var resultModel = new ResultModel();
         if(!phoneNum){
             resultModel.code=5;
             resultModel.message=CodeMessage.MSG_5;
@@ -134,7 +134,7 @@ module.exports={
     packageUpdate:function (req,res,next) {
         var tel =req.body.tel;
         var type = req.body.type;
-        var resultModel = new resultModel();
+        var resultModel = new ResultModel();
         if(!tel||type){
             resultModel.code = 5;
             resultModel.message=CodeMessage.MSG_5;
@@ -147,7 +147,66 @@ module.exports={
     payCallBack:function (req,res,next) {
         var user = req.user;
         var type = req.type;
+        var resultModel = new ResultModel();
         var startTime = Date.now();
+        var endTime = Date.now();
+
+
+        switch (type){
+            case 1:
+                if(user.type>0) {
+                    if(user.vipTime.end>=startTime){
+                        endTime = user.vipTime.end + 24 * 60 * 60 * 1000
+                    }else {
+                        endTime = startTime + 30 * 24 * 60 * 60 * 1000;
+                    }
+                }else {
+                    endTime = startTime + 30 * 24 * 60 * 60 * 1000;
+                }
+                break;
+            case 2:
+                if(user.type>0) {
+                    if(user.vipTime.end>=startTime&&type==user.type){
+                        endTime = user.vipTime.end + 3*30*24*60*60*1000;
+                    }else {
+                        endTime = startTime+3*30*24*60*60*1000;
+                    }
+                }else {
+                    endTime = startTime+3*30*24*60*60*1000;
+                }
+
+                break;
+            case 3:
+                if(user.type>0) {
+                    if(user.vipTime.end>=startTime&&type==user.type){
+                        endTime = user.vipTime.end + 3*30*24*60*60*1000;
+                    }else {
+                        endTime = startTime+3*30*24*60*60*1000;
+                    }
+                }else {
+                    endTime = startTime+3*30*24*60*60*1000;
+                }
+                break;
+        }
+        User.findOneAndUpdate({_id:user._id,isDelete:0},{$set:{
+            vipTime: {
+                end: endTime,
+                start: startTime},type:type,modifyAt:Date.now()
+        }}).exec(function (err,doc) {
+            if(err) return next(err);
+            console.log(doc);
+            console.log(endTime,startTime);
+            if(doc){
+                resultModel.code = 1;
+                resultModel.message = CodeMessage.MSG_1;
+                return res.json(resultModel);
+            }else {
+                resultModel.code=3;
+                resultModel.message = CodeMessage.MSG_3;
+                return res.json(resultModel);
+            }
+        })
+
     }
 
 }

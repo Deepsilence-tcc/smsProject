@@ -49,14 +49,14 @@ var AccountSchema = new mongoose.Schema({
         default:0,
         type:Number,
     },
-    "vipTime" : {
-        "start" : {
-            type:Date,
-            default:Date.now()
+    vipTime : {
+        start : {
+            type:Number,
+            default:0
         },
-        "end" : {
-            type:Date,
-            default:Date.now()
+        end : {
+            type:Number,
+            default:0
         }
     },
     createAt: {
@@ -72,7 +72,7 @@ var AccountSchema = new mongoose.Schema({
         default:0
     } //是否删除
 }, {
-    versionKey: false
+    versionKey: false,
 });
 
 mongoose.model('Account', AccountSchema, 'Account');
