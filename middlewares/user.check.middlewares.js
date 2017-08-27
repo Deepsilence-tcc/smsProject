@@ -1,11 +1,11 @@
 var CodeMessage = require('../util/codemessage');
-var ResultModel = require('../util/resultModel');
+var ResultModel = require('../util/resultmodel');
 var mongoose = require('mongoose');
 var User = mongoose.model('Account');
 
 module.exports = function (req,res,next) {
-    var tel = req.query.tel;
-    var type = parseInt(req.query.type);
+    var tel = req.body.tel;
+    var type = parseInt(req.body.type);
     var resultModel = new ResultModel()
     if(tel==null||tel==undefined||tel==''||type==''||type==undefined||type===null||type>3||type<0||type.isNaN){
         resultModel.code = 5;

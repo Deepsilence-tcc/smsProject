@@ -8,6 +8,6 @@ var UserMiddleware = require('../middlewares/user.check.middlewares');
 router.post('/register',UserController.register);
 router.post('/login',UserController.login);
 router.get('/smscode',UserController.getSMSCode);
-router.get('/order',UserMiddleware,UserController.payCallBack);
+router.post('/order',UserMiddleware,UserController.payCallBack);
 
 module.exports = router

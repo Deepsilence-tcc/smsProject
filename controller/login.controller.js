@@ -2,7 +2,7 @@
  * Created by cong on 2017/7/28.
  */
 var CodeMessage = require('../util/codemessage');
-var ResultModel = require('../util/resultModel');
+var ResultModel = require('../util/resultmodel');
 const SMSClient = require('../lib/index');
 var mongoose = require('mongoose');
 var config = require('../config/env/development');
@@ -131,26 +131,12 @@ module.exports={
 
 
     },
-    packageUpdate:function (req,res,next) {
-        var tel =req.body.tel;
-        var type = req.body.type;
-        var resultModel = new ResultModel();
-        if(!tel||type){
-            resultModel.code = 5;
-            resultModel.message=CodeMessage.MSG_5;
-            return res.json(resultModel);
-        }
-        User.findOne({
-
-        })
-    },
     payCallBack:function (req,res,next) {
         var user = req.user;
         var type = req.type;
         var resultModel = new ResultModel();
         var startTime = Date.now();
         var endTime = Date.now();
-
 
         switch (type){
             case 1:
