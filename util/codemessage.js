@@ -11,6 +11,7 @@ var CodeMessage = {
 	MSG_4: "没有数据",
 	MSG_5: "参数异参数异常常",
 	MSG_6: "url异常",
+	MSG_7: "升级失败",
 };
 
 module.exports = CodeMessage;

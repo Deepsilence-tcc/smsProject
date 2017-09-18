@@ -25,4 +25,4 @@ var KeySchema = new mongoose.Schema({
     }
 
 });
-mongoose.model('Key', KeySchema, 'Key');
+mongoose.model('Keys', KeySchema, 'Keys');

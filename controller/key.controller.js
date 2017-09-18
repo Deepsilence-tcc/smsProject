@@ -4,7 +4,7 @@
 var CodeMessage = require('../util/codemessage');
 var ResultModel = require('../util/resultmodel');
 var mongoose = require('mongoose');
-var Key = mongoose.model('Key');
+var Key = mongoose.model('Keys');
 
 module.exports = {
     create:function (req,res,next) {
@@ -45,15 +45,10 @@ module.exports = {
         })
     },
     getKey:function (req,res,next) {
-        var deviceId = req.body.deviceId;
         var resultMode = new ResultModel();
-        if(!deviceId){
-            resultMode.code=5;
-            resultMode.message = CodeMessage.MSG_5;
-            return res.json(resultMode);
-        }
-        Key.findOne({deviceId:deviceId,isDelete:0}).exec(function (err,doc) {
+        Key.findOne({isDelete:0}).exec(function (err,doc) {
             if(err) return next(err);
+            console.log(doc)
             if(doc){
                 resultMode.code = 1;
                 resultMode.message = CodeMessage.MSG_1;

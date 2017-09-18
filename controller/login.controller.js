@@ -133,47 +133,9 @@ module.exports={
     },
     payCallBack:function (req,res,next) {
         var user = req.user;
-        var type = req.type;
+        var endTime = req.endTime;
+
         var resultModel = new ResultModel();
-        var startTime = Date.now();
-        var endTime = Date.now();
-
-        switch (type){
-            case 1:
-                if(user.type>0) {
-                    if(user.vipTime.end>=startTime){
-                        endTime = user.vipTime.end + 24 * 60 * 60 * 1000
-                    }else {
-                        endTime = startTime + 30 * 24 * 60 * 60 * 1000;
-                    }
-                }else {
-                    endTime = startTime + 30 * 24 * 60 * 60 * 1000;
-                }
-                break;
-            case 2:
-                if(user.type>0) {
-                    if(user.vipTime.end>=startTime&&type==user.type){
-                        endTime = user.vipTime.end + 3*30*24*60*60*1000;
-                    }else {
-                        endTime = startTime+3*30*24*60*60*1000;
-                    }
-                }else {
-                    endTime = startTime+3*30*24*60*60*1000;
-                }
-
-                break;
-            case 3:
-                if(user.type>0) {
-                    if(user.vipTime.end>=startTime&&type==user.type){
-                        endTime = user.vipTime.end + 3*30*24*60*60*1000;
-                    }else {
-                        endTime = startTime+3*30*24*60*60*1000;
-                    }
-                }else {
-                    endTime = startTime+3*30*24*60*60*1000;
-                }
-                break;
-        }
         User.findOneAndUpdate({_id:user._id,isDelete:0},{$set:{
             vipTime: {
                 end: endTime,
@@ -193,6 +155,76 @@ module.exports={
             }
         })
 
-    }
+    },
+    getUserType:function (req,res,next) {
+        var tel = req.body.tel;
+        // var tel = req.query.tel;
+        var resultModel = new ResultModel();
+        if(typeof tel=='undefined'||tel==null||tel==''){
+            resultModel.code = 5;
+            resultModel.message = CodeMessage.MSG_5;
+            return res.json(resultModel);
+        }
+        User.find({tel:tel,isDelete:0},{password:0,smscode:0,isDelete:0,createAt:0,modifyAt:0,}).exec(function (err,doc) {
+            if(err) return next(err);
+            if(doc){
+                var currentDate = Date.now();
+                console.log(currentDate);
+                resultModel.code=1;
+                resultModel.message = CodeMessage.MSG_1;
+                resultModel.data = doc;
+                return res.json(resultModel)
+            }else {
+                resultModel.code =4;
+                resultModel.message = CodeMessage.MSG_4;
+                resultModel.data={};
+                return res.json(resultModel);
+            }
+        })
+    },
+    getUserDateTime:function (req,res,next) {
+        // var tel = req.body.tel;
+        var tel = req.body.tel;
+        var resultModel = new ResultModel();
+        if(typeof tel=='undefined'||tel==null||tel==''){
+            resultModel.code = 5;
+            resultModel.message = CodeMessage.MSG_5;
+            return res.json(resultModel);
+        }
+        User.findOne({tel:tel,isDelete:0},{password:0,smscode:0,isDelete:0,createAt:0,modifyAt:0,identityId:0,name:0,tel:0,age:0,gender:0,headimg:0,expire:0,deviceId:0,times:0}).exec(function (err,doc) {
+            if(err) return next(err);
+            if(doc){
+                var currentDate = Date.now();
+                if(currentDate>doc.vipTime.end){
+                    User.update({tel:tel,isDelete:0},{$set:{type:0,vipTime:{
+                        end:Date.now(),
+                        start:Date.now()
+                    }}},{multi:false}).exec(function (err) {
+                        if(err) return next(err);
+                        resultModel.code=1;
+                        resultModel.message = CodeMessage.MSG_1;
+                        resultModel.data = {
+                            vipTime:doc.vipTime,
+                            type:0
+                        };
+                        return res.json(resultModel)
+                    })
+                }else {
+                    if(err) return next(err);
+                    resultModel.code=1;
+                    resultModel.message = CodeMessage.MSG_1;
+                    resultModel.data = doc;
+                    return res.json(resultModel)
+                }
+
+            }else {
+                resultModel.code =4;
+                resultModel.message = CodeMessage.MSG_4;
+                resultModel.data={};
+                return res.json(resultModel);
+            }
+        })
+    },
+
 
 }

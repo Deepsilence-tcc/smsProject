@@ -9,5 +9,7 @@ router.post('/register',UserController.register);
 router.post('/login',UserController.login);
 router.get('/smscode',UserController.getSMSCode);
 router.post('/order',UserMiddleware,UserController.payCallBack);
+router.get('/type',UserController.getUserType);
+router.get('/endTime',UserController.getUserDateTime);
 
 module.exports = router

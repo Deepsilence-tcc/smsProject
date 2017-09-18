@@ -5,9 +5,10 @@
 var express = require('express');
 var router = express.Router();
 var KeyController = require('../controller/key.controller');
+var $keyMiddleware = require('../middlewares/key.check.middlewares');
 
 router.post('/create',KeyController.create);
-router.post('/getkey',KeyController.getKey);
+router.post('/getkey',$keyMiddleware,KeyController.getKey);
 
 
 module.exports = router
